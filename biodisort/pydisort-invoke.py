@@ -1,6 +1,10 @@
 import disort
 import numpy as np
-import biosnicar
+from pathlib import Path
+import sys
+path_root = Path(__file__).parents[1]
+sys.path.append(str(path_root))
+from biosnicar.drivers import setup_snicar
 
 
 def construct_henyey_greenstein(gg, phi0):

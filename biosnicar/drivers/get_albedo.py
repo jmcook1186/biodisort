@@ -9,7 +9,7 @@ from biosnicar.optical_properties.column_OPs import get_layer_OPs, mix_in_impuri
 from biosnicar.utils.display import display_out_data, plot_albedo
 from biosnicar.drivers.setup_snicar import setup_snicar
 from biosnicar.rt_solvers.toon_rt_solver import toon_solver
-
+import disort
 
 def get(solver, plot, validate):
     (
@@ -51,4 +51,6 @@ def get(solver, plot, validate):
     # if plot:
     #     plot_albedo(plot_config, model_config, outputs.albedo)
     # display_out_data(outputs)
+
+    print(tau)
     return tau
