@@ -1,0 +1,6 @@
+biosnicar/build/*
+biosnicar/__pycache__/*
+biosnicar/biosnicar.egg-info/*
+biodisort/biodisort.egg-info/*
+*__pycache__/*
+*cpython*

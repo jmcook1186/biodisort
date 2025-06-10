@@ -1,5 +1,7 @@
 import disort
 import numpy as np
+import biosnicar
+
 
 def construct_henyey_greenstein(gg, phi0):
     r"""Construct a Henyey-Greenstein phase function.
@@ -80,6 +82,7 @@ umu0 = 0.57 #cosine of solar zenith angle
 umu = [0.1, 0.2, 0.3, 0.4, 0.5] # cosine of emissions (viewing) angles 
 print(umu)
 
+# pmom is an array of phase function Legendre coefficients
 pmom = np.zeros((128, layer_thicknesses.shape[0]-1))
 pmom[0] = 1
 
@@ -137,12 +140,13 @@ rhoq, rhou, emust, bemst, rho_accurate = disort.disobrdf(usr_ang, umu, fbeam, um
 empty_bemst, debug, azimuth, phi0, empty_rho_accurate, brdf_type, brdf_arg, nmug, nstr=n_streams, numu=n_polar, nphi=n_azimuth)
 
 pf = construct_henyey_greenstein([0.5,0.5,0.5,0.5,0.5],np.linspace(0, 180, num=5))*4*np.pi
-
+print(pf)
 # note optical depth is dtau
-rfldir, rfldn, flup, dfdt, uavg, uu, albedo_medium, trnmed = disort.disort(usr_ang, usr_tau, ibcnd, onlyfl, prnt,
-plank, lamber, deltamplus, do_pseudo_sphere, optical_depth, ss_alb, pmom, temper, wvnmlo, wvnhi, user_od_output, umu0, phi0,
-umu, azimuth, np.pi, fisot, albedo, btemp, ttemp, temis, earth_radius, h_lyr, rhoq, rhou, rho_accurate, bemst, emust, accur, header, direct_beam_flux,
-diffuse_down_flux, diffuse_up_flux, flux_divergence, mean_intensity, intensity, albedo_medium, transmissivity_medium, maxcmu=n_streams, maxulv=n_layers, maxmom=127)
+for i in range (0,1000,1):
+    rfldir, rfldn, flup, dfdt, uavg, uu, albedo_medium, trnmed = disort.disort(usr_ang, usr_tau, ibcnd, onlyfl, prnt,
+    plank, lamber, deltamplus, do_pseudo_sphere, optical_depth, ss_alb, pmom, temper, wvnmlo, wvnhi, user_od_output, umu0, phi0,
+    umu, azimuth, np.pi, fisot, albedo, btemp, ttemp, temis, earth_radius, h_lyr, rhoq, rhou, rho_accurate, bemst, emust, accur, header, direct_beam_flux,
+    diffuse_down_flux, diffuse_up_flux, flux_divergence, mean_intensity, intensity, albedo_medium, transmissivity_medium, maxcmu=n_streams, maxulv=n_layers, maxmom=127)
 
 
 print(albedo_medium)
