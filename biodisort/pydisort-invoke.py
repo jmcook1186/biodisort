@@ -91,8 +91,9 @@ print(pf)
 # note optical depth is dtau
 rfldir, rfldn, flup, dfdt, uavg, uu, albedo_medium, trnmed = disort.disort(usr_ang, usr_tau, ibcnd, onlyfl, prnt,
 plank, lamber, deltamplus, do_pseudo_sphere, optical_depth, ss_alb, pmom, temperatures, wvnmlo, wvnhi, utau, umu0, phi0,
-umu, azimuth_angle, fbeam, fisot, albedo, btemp, ttemp, temis, earth_radius, lyr_height, rhoq, rhou, rho_accurate, bemst, emust, accur, header, direct_beam_flux,
-diffuse_down_flux, diffuse_up_flux, flux_divergence, mean_intensity, intensity, albedo_medium, transmissivity_medium, maxcmu=n_streams, maxulv=nbr_lyr, maxmom=127)
+umu, azimuth_angle, fbeam, fisot, albedo, btemp, ttemp, temis, earth_radius, lyr_height, rhoq, rhou, rho_accurate, bemst, 
+emust, accur, header, direct_beam_flux, diffuse_down_flux, diffuse_up_flux, flux_divergence, mean_intensity, intensity, 
+albedo_medium, transmissivity_medium, maxcmu=n_streams, maxulv=nbr_lyr, maxmom=127)
 
 
 print(uu)

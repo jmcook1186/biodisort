@@ -1,6 +1,8 @@
 
 def set_disort_params(ice, illumination, snicar_config):
 
+    
+
     # general disort config
     n_streams = 32
     n_polar = 5

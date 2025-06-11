@@ -18,20 +18,20 @@ RTM:
   NIR_MAX_IDX: 480
 
 ICE:
-  DZ: [0.02,0.146]  # thickness of each vertical layer (unit : m)
-  LAYER_TYPE: [1,1]  # 0: ice spheres, 1: solid ice w/frsnl, 2: w/out frsnl, 3: interspersed water/ice spheres
-  CDOM: [0, 0]  # Only for layer type :: 1
-  RHO: [700, 700]  # density of each layer (unit : kg m-3)
+  DZ: [0.02,1, 1, 1, 1]  # thickness of each vertical layer (unit : m)
+  LAYER_TYPE: [1, 1, 1, 1 ,1]  # 0: ice spheres, 1: solid ice w/frsnl, 2: w/out frsnl, 3: interspersed water/ice spheres
+  CDOM: [0, 0, 0, 0, 0]  # Only for layer type :: 1
+  RHO: [700, 700, 700, 700, 700]  # density of each layer (unit : kg m-3)
   RF: 2
-  SHP: [0, 0]  # grain shape (He et al. 2016, 2017)
-  RDS: [1000, 1000]  # effective grain or bubble radius
-  WATER_COATING: [0, 0]  # radius of optional liquid water coating
-  LWC: [0, 0] # LWC content in snow/ice (not using coated spheres, see the doc)
+  SHP: [0, 0, 0, 0, 0]  # grain shape (He et al. 2016, 2017)
+  RDS: [1000, 1000, 1000, 1000, 1000]  # effective grain or bubble radius
+  WATER_COATING: [0, 0, 0 ,0 ,0]  # radius of optional liquid water coating
+  LWC: [0, 0, 0, 0, 0] # LWC content in snow/ice (not using coated spheres, see the doc)
   LWC_PCT_BBL: 0.5 # % of LWC in ice present as closed pores vs matrix water
-  HEX_SIDE: [10000, 10000]
-  HEX_LENGTH: [10000, 10000]
-  SHP_FCTR: [ 0, 0]
-  AR: [0, 0]
+  HEX_SIDE: [10000, 10000, 10000, 10000, 10000]
+  HEX_LENGTH: [10000, 10000, 10000, 10000, 10000]
+  SHP_FCTR: [ 0, 0, 0 , 0 ,0]
+  AR: [0, 0, 0, 0, 0]
 
 PATHS:
   SNICAR_BASE_PATH: "/home/joe/Code/biosnicar-py"
@@ -60,21 +60,21 @@ IMPURITIES:
     CFACTOR: 1
     COATED: False
     UNIT: 0
-    CONC: [0 ,0]
+    CONC: [0 ,0, 0 , 0, 0]
   
   SA:
     NAME: "sa"
     FILE: "snow_algae_empirical_Chevrollier2023.nc"
     COATED: False
     UNIT: 1
-    CONC: [40000 ,0]  
+    CONC: [40000 , 0, 0 , 0, 0]  
 
   GA:
     NAME: "ga"
     FILE: "ice_algae_empirical_Chevrollier2023.nc"
     COATED: False
     UNIT: 1
-    CONC: [0 ,0]
+    CONC: [0 ,0, 0, 0, 0]
 
 PLOT:
     FIG_SIZE: (8,6)
@@ -137,3 +137,44 @@ BIOOPTICAL:
     SAVE_PATH_NETCDF: "Data/OP_data/480band/lap/"
     INFO_NETCDF: "info"
     FILENAME_NETCDF: "alg"
+
+DISORT:
+  CONFIG:
+    N_STREAMS: 32
+    N_POLAR: 5
+    N_AZIMUTH: 1
+    BOUNDARY_CONDITIONS: False
+    PHI0: 0
+    USR_ANG: True
+    USR_TAU: True
+    ONLYFL: False
+    PRNT: [False, False, False, False, False]
+    PLANK: False
+    LAMBERTIAN: True
+    DELTAMPLUS: True
+    DO_PSEUDO_SPHERE: False
+    FISOT: 0
+    FBEAM: 3.14
+    ALBEDO: 0.1
+    BTEMP: 273.15
+    TTEMP: 273.15
+    TEMIS: 273.15
+    EARTH_RADIUS: 3400000
+    ACCURACY: 0.001
+    HEADER: ""
+    DEBUG: False
+    NMUG: 6
+    RHOQ: 0
+    RHOU: 0
+    EMUST: 0
+    BEMST: 0
+    RHO_ACCURATE: 0
+
+
+
+  ORIENTATION:
+    AZIMUTH_ANGLE: 0
+    EMISSION_ANGLES: [80, 70, 60, 50, 40]
+  
+  ICE:
+    TEMPERATURES: [273.15, 273.15, 273.15, 273.15, 273.15, 273.15]

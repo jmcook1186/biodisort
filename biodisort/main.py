@@ -21,7 +21,13 @@ from biosnicar.utils.display import display_out_data, plot_albedo
 from biosnicar.drivers.setup_snicar import setup_snicar
 from biosnicar.rt_solvers.toon_rt_solver import toon_solver
 from biodisort.classes.optical_properties_for_disort import OpticalPropertiesForDisort
+from biodisort.classes.model_config import DisortConfig
 import disort
+
+
+BIODISORT_SRC_PATH = Path(__file__).resolve().parent.parent
+print("BIODISORT_SRC_PATH in setup_snicar.py: ", BIODISORT_SRC_PATH)
+input_file = BIODISORT_SRC_PATH.joinpath("inputs.yaml").as_posix()
 
 # first build the ice column and illumination conditions by instantiating the relevant classes from snicar
 (
@@ -44,96 +50,51 @@ tau, ssa, g, L_snw = mix_in_impurities(
 
 # create an object to store the snicar column OPs
 optical_properties = OpticalPropertiesForDisort(ssa, tau, g, L_snw) 
-
-
-
-# general disort config
-
-n_streams = 32
-n_polar = 5
-n_azimuth = 1
-
-# disort specific params
-# illumination
-azimuth = 0
-
-# params common to snicar
-layer_thicknesses = np.array([0.01,0.1,0.1,0.1,0.1])
-n_layers = len(layer_thicknesses)
-solar_zenith_angle = illumination.solzen # aka phi0
-optical_depth = [tau[0][50],tau[0][50],tau[0][50],tau[0][50]]
-ss_alb = [ssa[0][50],ssa[0][50],ssa[0][50],ssa[0][50]]
-
-umu0 = 0.57 #cosine of solar zenith angle
-umu = [0.1, 0.2, 0.3, 0.4, 0.5] # cosine of emissions (viewing) angles 
-print(umu)
-
-# pmom is an array of phase function Legendre coefficients
-pmom = np.zeros((128, layer_thicknesses.shape[0]-1))
-pmom[0] = 1
-
-# Define output arrays
+pf = np.zeros((128, ice.nbr_lyr)) # TODO update with real pmom calculation
+disort_config = DisortConfig(input_file,snicar_config, ice, illumination, optical_properties, pf)
 
 albedo_medium = np.zeros((5,))
-diffuse_up_flux = np.zeros((n_layers,))
-diffuse_down_flux = np.ones((n_layers,))
-direct_beam_flux = np.ones((n_layers,))
-flux_divergence = np.zeros((n_layers,))
-intensity = np.zeros((5, n_layers, 1))
-mean_intensity = np.zeros((n_layers,))
-transmissivity_medium = np.zeros((5,))
+diffuse_up_flux = np.zeros((disort_config.nbr_lyr))
+diffuse_down_flux = np.zeros((disort_config.nbr_lyr))
+direct_beam_flux = np.ones((disort_config.nbr_lyr,))
+flux_divergence = np.zeros((disort_config.nbr_lyr,))
+intensity = np.zeros((5, disort_config.nbr_lyr, 1))
+mean_intensity = np.zeros((disort_config.nbr_lyr,))
+transmissivity_medium = np.zeros((disort_config.nbr_lyr,))
 
-# Define miscellaneous variables
-user_od_output = [0, 0.05, 0.1, 0.2, 0.5]
-temper = np.zeros(n_layers)
-h_lyr = np.zeros(n_layers)
-
-# Make the surface
-brdf_arg = np.array([1, 0.06, 0.7, 0.26, 0.3, 1])
+brdf_type = 1
+brdf_arg = np.array([1, 0.6, 0.06, 0.001, 0.0001, 0.00001])
 empty_bemst = np.zeros((16,))
 empty_emust = np.zeros((5,))
 empty_rho_accurate = np.zeros((5, 1))
-empty_rhou = np.zeros((n_streams, n_streams//2 + 1, n_streams))
-empty_rhoq = np.zeros((n_streams//2, n_streams//2 + 1, n_streams))
+empty_rhou = np.zeros((disort_config.n_streams, disort_config.n_streams//2 + 1, disort_config.n_streams))
+empty_rhoq = np.zeros((disort_config.n_streams//2, disort_config.n_streams//2 + 1, disort_config.n_streams))
 
-usr_ang = True
-usr_tau = True
-ibcnd = False
-onlyfl = False
-prnt= [False, False, False, False, False]
-plank= False
-lamber = True
-deltamplus= True
-do_pseudo_sphere= False
-wvnmlo = 1
-wvnhi = 1
-phi0 = 0
-fbeam = np.pi
-fisot = 0
-albedo = 0.1
-btemp = 0
-ttemp = 0
-temis = 1
-earth_radius= 3400000
-accur = 0
-header = ''
-dTau = 1
-debug = False
-brdf_type = 5
-nmug = 6
+# do brdf
+rhoq, rhou, emust, bemst, rho_accurate = disort.disobrdf(disort_config.usr_ang, disort_config.umu, disort_config.fbeam, disort_config.umu0, disort_config.lambertian, disort_config.albedo, disort_config.onlyfl, empty_rhoq, empty_rhou, empty_emust,
+empty_bemst, disort_config.debug, disort_config.azimuth_angle, disort_config.phi0, empty_rho_accurate, 1, brdf_arg, disort_config.nmug, disort_config.n_streams, numu=disort_config.n_polar, nphi=disort_config.n_azimuth)
 
-rhoq, rhou, emust, bemst, rho_accurate = disort.disobrdf(usr_ang, umu, fbeam, umu0, lamber, albedo, onlyfl, empty_rhoq, empty_rhou, empty_emust,
-empty_bemst, debug, azimuth, phi0, empty_rho_accurate, brdf_type, brdf_arg, nmug, nstr=n_streams, numu=n_polar, nphi=n_azimuth)
+# for k,v in disort_config.__dict__.items():
+#             print(f"{str(k)} = {str(v)}")
 
-pf = construct_henyey_greenstein([0.5,0.5,0.5,0.5,0.5],np.linspace(0, 180, num=5))*4*np.pi
-print(pf)
-# note optical depth is dtau
+# do disort
+alb =[]
+for i in range(480):
+    
+    rfldir, rfldn, flup, dfdt, uavg, uu, albedo_medium, trnmed = disort.disort(disort_config.usr_ang, 
+    disort_config.usr_tau, disort_config.boundary_conditions, disort_config.onlyfl, disort_config.prnt,
+    disort_config.plank, disort_config.lambertian, disort_config.deltamplus, disort_config.do_pseudo_sphere, 
+    disort_config.optical_depth[:,i], disort_config.ss_alb[:,i], disort_config.pmom, 
+    disort_config.temperatures, disort_config.wavenumber_low, disort_config.wavenumber_high, 
+    disort_config.utau, disort_config.umu0, disort_config.phi0, disort_config.umu, disort_config.azimuth_angle,
+    disort_config.fbeam, disort_config.fisot, disort_config.albedo, disort_config.btemp, disort_config.ttemp, 
+    disort_config.temis, disort_config.earth_radius, disort_config.lyr_height, empty_rhoq, empty_rhou, 
+    empty_rho_accurate, empty_bemst, empty_emust, disort_config.accuracy, disort_config.header, 
+    direct_beam_flux, diffuse_down_flux, diffuse_up_flux, flux_divergence, mean_intensity, intensity, 
+    albedo_medium, transmissivity_medium, maxcmu=disort_config.n_streams, maxulv=disort_config.nbr_lyr, maxmom=127)
 
-rfldir, rfldn, flup, dfdt, uavg, uu, albedo_medium, trnmed = disort.disort(usr_ang, usr_tau, ibcnd, onlyfl, prnt,
-plank, lamber, deltamplus, do_pseudo_sphere, optical_depth, ss_alb, pmom, temper, wvnmlo, wvnhi, user_od_output, umu0, phi0,
-umu, azimuth, np.pi, fisot, albedo, btemp, ttemp, temis, earth_radius, h_lyr, rhoq, rhou, rho_accurate, bemst, emust, accur, header, direct_beam_flux,
-diffuse_down_flux, diffuse_up_flux, flux_divergence, mean_intensity, intensity, albedo_medium, transmissivity_medium, maxcmu=n_streams, maxulv=n_layers, maxmom=127)
+    alb.append(flup[0]/(rfldir[0]+rfldn[0]))
 
 
-plt.plot(rfldir)
+plt.plot(alb)
 plt.show()
