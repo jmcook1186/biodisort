@@ -1,25 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import numpy as np
 from pathlib import Path
-import matplotlib.pyplot as plt
 import sys
 path_root = Path(__file__).parents[2]
 sys.path.append(str(path_root))
-from biosnicar.drivers import get_albedo
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 import numpy as np
-from pathlib import Path
+import matplotlib.pyplot as plt
 from biosnicar.utils.validate_inputs import validate_inputs
 from biosnicar.rt_solvers.adding_doubling_solver import adding_doubling_solver
 from biosnicar.optical_properties.column_OPs import get_layer_OPs, mix_in_impurities
-from biosnicar.utils.display import display_out_data, plot_albedo
 from biosnicar.drivers.setup_snicar import setup_snicar
-from biosnicar.rt_solvers.toon_rt_solver import toon_solver
 from biodisort.classes.optical_properties_for_disort import OpticalPropertiesForDisort
 from biodisort.classes.model_config import DisortConfig
 from biodisort.utils.get_incident_intensities import get_intensity_of_direct_beam, get_diffuse_intensity
