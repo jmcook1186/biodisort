@@ -53,7 +53,7 @@ tau, ssa, g, L_snw = mix_in_impurities(
 
 # create an object to store the snicar column OPs
 optical_properties = OpticalPropertiesForDisort(ssa, tau, g, L_snw) 
-pf = np.zeros((128, ice.nbr_lyr)) # TODO update with real pmom calculation
+pf = np.zeros((128, 5)) # TODO update with real pmom calculation
 disort_config = DisortConfig(input_file,snicar_config, ice, illumination, optical_properties, pf)
 
 # set incident intensities 
@@ -62,20 +62,20 @@ disort_config.fisot = get_diffuse_intensity(disort_config)
 # print("FBEAM", disort_config.fbeam)
 # print("FISOT", disort_config.fisot)
 
-albedo_medium = np.zeros((5,))
-diffuse_up_flux = np.zeros((disort_config.n_polar))
-diffuse_down_flux = np.zeros((disort_config.n_polar))
-direct_beam_flux = np.ones((disort_config.n_polar,))
-flux_divergence = np.zeros((disort_config.n_polar,))
-intensity = np.zeros((5, disort_config.n_polar, 1))
-mean_intensity = np.zeros((disort_config.n_polar,))
+albedo_medium = np.zeros((disort_config.n_polar,))
+diffuse_up_flux = np.zeros((disort_config.nbr_lyr))
+diffuse_down_flux = np.zeros((disort_config.nbr_lyr))
+direct_beam_flux = np.ones((disort_config.nbr_lyr,))
+flux_divergence = np.zeros((disort_config.nbr_lyr,))
+intensity = np.zeros((disort_config.n_polar, disort_config.nbr_lyr, 1))
+mean_intensity = np.zeros((disort_config.nbr_lyr,))
 transmissivity_medium = np.zeros((disort_config.n_polar,))
 
 brdf_type = 1
 brdf_arg = np.array([1, 0.6, 0.06, 0.001, 0.0001, 0.00001])
 empty_bemst = np.zeros((16,))
-empty_emust = np.zeros((5,))
-empty_rho_accurate = np.zeros((5, 1))
+empty_emust = np.zeros((disort_config.n_polar,))
+empty_rho_accurate = np.zeros((disort_config.n_polar, 1))
 empty_rhou = np.zeros((disort_config.n_streams, disort_config.n_streams//2 + 1, disort_config.n_streams))
 empty_rhoq = np.zeros((disort_config.n_streams//2, disort_config.n_streams//2 + 1, disort_config.n_streams))
 
@@ -99,13 +99,18 @@ for i in range(480):
     direct_beam_flux, diffuse_down_flux, diffuse_up_flux, flux_divergence, mean_intensity, intensity, 
     albedo_medium, transmissivity_medium, maxcmu=disort_config.n_streams, maxulv=disort_config.nbr_lyr, maxmom=127)
 
-    # remember each output is an array over viewing angles - we need a suitable itnegration func, for now just grab idx 0
+    # remember each output is an array over viewing angles - for now just take the mean over angle
     # for each wavelength and bung it in an output array
     # albedo is total upwards flux divided by total downwards flux
-    alb.append(flup[0]/(rfldir[0]+rfldn[0]))
+    flup_av = np.mean(flup)
+    rfldir_av= np.mean(rfldir)
+    rfldn_av = np.mean(rfldn) 
+    alb.append(flup_av/(rfldir_av+rfldn_av))
 
-
-plt.plot(snicar_config.wavelengths[0:200], alb[0:200])
-plt.xlabel("wavelength (um)")
-plt.ylabel("albedo")
+print(alb)
+plt.plot(alb)
 plt.show()
+# plt.plot(snicar_config.wavelengths[0:200], alb[0:200])
+# plt.xlabel("wavelength (um)")
+# plt.ylabel("albedo")
+# plt.show()

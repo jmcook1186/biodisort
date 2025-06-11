@@ -7,11 +7,12 @@ CTRL:
   POLY_ORDER: 3
 
 RTM:
-  DIRECT: 1
+  DIRECT: 1 # can have both direct and diffuse in biodsort (not so in biosnicar)
+  DIFFUSE: 1
   NBR_WVL: 480
   APRX_TYP: 2
   DELTA: True
-  SOLZEN: 50
+  SOLZEN: 40
   INCOMING: 0
   VIS_MAX_IDX: 39
   NIR_MAX_IDX: 480
@@ -94,7 +95,7 @@ PLOT:
 DISORT:
   CONFIG:
     N_STREAMS: 32
-    N_POLAR: 5
+    N_POLAR: 8
     N_AZIMUTH: 1
     BOUNDARY_CONDITIONS: False
     PHI0: 0
@@ -127,7 +128,7 @@ DISORT:
 
   ORIENTATION:
     AZIMUTH_ANGLE: 0
-    EMISSION_ANGLES: [80, 70, 60, 50, 40]
+    EMISSION_ANGLES: [80, 70, 60, 50, 40, 30, 20, 10]
   
   ICE:
     TEMPERATURES: [273.15, 273.15, 273.15, 273.15, 273.15, 273.15]

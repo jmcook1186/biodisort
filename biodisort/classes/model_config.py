@@ -20,6 +20,8 @@ class DisortConfig:
         self.n_azimuth = inputs["DISORT"]["CONFIG"]["N_AZIMUTH"]
         self.azimuth_angle = inputs["DISORT"]["ORIENTATION"]["AZIMUTH_ANGLE"]
         self.emission_angles = inputs["DISORT"]["ORIENTATION"]["EMISSION_ANGLES"]
+        self.direct = inputs["RTM"]["DIRECT"]
+        self.diffuse = inputs["RTM"]["DIFFUSE"]
         self.layer_thicknesses = ice.dz
         self.nbr_lyr= ice.nbr_lyr
         self.solar_zenith_angle = illumination.solzen
