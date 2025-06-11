@@ -2,11 +2,15 @@ import disort
 import numpy as np
 from pathlib import Path
 import sys
-path_root = Path(__file__).parents[1]
+path_root = Path(__file__).parents[2]
 sys.path.append(str(path_root))
 from biosnicar.drivers import setup_snicar
 from biodisort.brdf.phase_function import construct_henyey_greenstein
 
+###
+# This is just a junk script to drive disort in the simplest way with known good-params
+# it has been sup[erceded by main.py, but it's kept around because it's useful to refer to occasionally when things get tangled!
+###
 
 # general disort config
 

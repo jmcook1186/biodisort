@@ -88,4 +88,3 @@ class Illumination:
             self.Fs = np.zeros(self.nbr_wvl)
         return
 
-        return

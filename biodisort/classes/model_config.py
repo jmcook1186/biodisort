@@ -48,7 +48,7 @@ class DisortConfig:
         self.do_pseudo_sphere = inputs["DISORT"]["CONFIG"]["DO_PSEUDO_SPHERE"]
         self.fisot = inputs["DISORT"]["CONFIG"]["FISOT"] # Intensity of top-boundary isotropic illumination.
         self.fbeam = inputs["DISORT"]["CONFIG"]["FBEAM"]
-        self.albedo = inputs["DISORT"]["CONFIG"]["ALBEDO"] # albnedo of bottom surface
+        self.albedo = inputs["DISORT"]["CONFIG"]["ALBEDO"] # albedo of bottom surface
         self.btemp = inputs["DISORT"]["CONFIG"]["BTEMP"]
         self.ttemp = inputs["DISORT"]["CONFIG"]["TTEMP"]
         self.temis = inputs["DISORT"]["CONFIG"]["TEMIS"]
