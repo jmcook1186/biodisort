@@ -74,10 +74,7 @@ empty_rhoq = np.zeros((disort_config.n_streams//2, disort_config.n_streams//2 + 
 rhoq, rhou, emust, bemst, rho_accurate = disort.disobrdf(disort_config.usr_ang, disort_config.umu, disort_config.fbeam, disort_config.umu0, disort_config.lambertian, disort_config.albedo, disort_config.onlyfl, empty_rhoq, empty_rhou, empty_emust,
 empty_bemst, disort_config.debug, disort_config.azimuth_angle, disort_config.phi0, empty_rho_accurate, 1, brdf_arg, disort_config.nmug, disort_config.n_streams, numu=disort_config.n_polar, nphi=disort_config.n_azimuth)
 
-# for k,v in disort_config.__dict__.items():
-#             print(f"{str(k)} = {str(v)}")
-
-# do disort
+# do disort and wrangtle an output to plot
 alb =[]
 for i in range(480):
     
@@ -93,8 +90,16 @@ for i in range(480):
     direct_beam_flux, diffuse_down_flux, diffuse_up_flux, flux_divergence, mean_intensity, intensity, 
     albedo_medium, transmissivity_medium, maxcmu=disort_config.n_streams, maxulv=disort_config.nbr_lyr, maxmom=127)
 
+    # remember each output is an array over viewing angles - we need a suitable itnegration func, for now just grab idx 0
+    # for each wavelength and bung it in an output array
+    # albedo is total upwards flux divided by total downwards flux
     alb.append(flup[0]/(rfldir[0]+rfldn[0]))
 
 
-plt.plot(alb)
+plt.plot(snicar_config.wavelengths[0:200], alb[0:200])
+plt.xlabel("wavelength (um)")
+plt.ylabel("albedo")
 plt.show()
+
+
+
