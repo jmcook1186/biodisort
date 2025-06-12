@@ -6,6 +6,7 @@ import xarray as xr
 import numpy as np
 
 
+
 def get_intensity_of_direct_beam(disort_config: DisortConfig):
     """
     gets the intensity of the direct beam from precalculated files
@@ -27,6 +28,7 @@ def get_intensity_of_direct_beam(disort_config: DisortConfig):
     else:
         flx_slr = np.zeros(480)
     return flx_slr
+
 
 def get_diffuse_intensity(disort_config: DisortConfig):
     """

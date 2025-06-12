@@ -5,11 +5,8 @@ from pathlib import Path
 
 from biosnicar.classes import (
     Ice,
-    Illumination,
     Impurity,
     ModelConfig,
-    PlotConfig,
-    RTConfig,
 )
 
 
@@ -21,11 +18,8 @@ def setup_snicar(input_file):
 
     Returns:
         ice: instance of Ice class
-        illumination: instance of Illumination class
-        rt_config: instance of RTConfig class
         model_config: instance of ModelConfig class
-        plot_config: instance of PlotConfig class
-        display_config: instance of DisplayConfig class
+
 
     """
     # define input file
@@ -36,22 +30,17 @@ def setup_snicar(input_file):
 
     else:
         input_file = input_file
+
     impurities = build_impurities_array(input_file)
     (
         ice,
-        illumination,
-        rt_config,
         model_config,
-        plot_config,
     ) = build_classes(input_file)
 
     print(model_config.window_size)
     return (
         ice,
-        illumination,
-        rt_config,
         model_config,
-        plot_config,
         impurities,
     )
 
@@ -72,12 +61,9 @@ def build_classes(input_file):
     """
 
     ice = Ice(input_file)
-    illumination = Illumination(input_file)
-    rt_config = RTConfig(input_file)
     model_config = ModelConfig(input_file)
-    plot_config = PlotConfig(input_file)
 
-    return ice, illumination, rt_config, model_config, plot_config
+    return ice, model_config
 
 
 def build_impurities_array(input_file):

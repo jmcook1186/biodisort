@@ -44,5 +44,3 @@ class ModelConfig:
         self.savefigpath = inputs["PLOT"]["SAVEPATH"]
         self.wavelengths = np.arange(0.205, 4.999, 0.01)
         self.nbr_wvl = len(self.wavelengths)
-        self.vis_max_idx = inputs["RTM"]["VIS_MAX_IDX"]
-        self.nir_max_idx = inputs["RTM"]["NIR_MAX_IDX"] 

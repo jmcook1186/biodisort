@@ -8,14 +8,12 @@ sys.path.append(str(path_root))
 import numpy as np
 import matplotlib.pyplot as plt
 from biosnicar.utils.validate_inputs import validate_inputs
-from biosnicar.rt_solvers.adding_doubling_solver import adding_doubling_solver
 from biosnicar.optical_properties.column_OPs import get_layer_OPs, mix_in_impurities
 from biosnicar.drivers.setup_snicar import setup_snicar
 from biodisort.classes.optical_properties_for_disort import OpticalPropertiesForDisort
 from biodisort.classes.model_config import DisortConfig
 from biodisort.utils.get_incident_intensities import get_intensity_of_direct_beam, get_diffuse_intensity
 import disort
-
 
 BIODISORT_SRC_PATH = Path(__file__).resolve().parent.parent.parent
 print("BIODISORT_SRC_PATH in setup_snicar.py: ", BIODISORT_SRC_PATH)
@@ -24,15 +22,12 @@ input_file = BIODISORT_SRC_PATH.joinpath("inputs.yaml").as_posix()
 # first build the ice column and illumination conditions by instantiating the relevant classes from snicar
 (
 ice,
-illumination,
-rt_config,
 snicar_config,
-plot_config,
 impurities,
 ) = setup_snicar("default")
 
 # validate the inputs
-validate_inputs(ice, illumination, impurities)
+# validate_inputs(ice, impurities)
 
 # now get the optical properties of the ice column
 ssa_snw, g_snw, mac_snw = get_layer_OPs(ice, snicar_config)
@@ -40,16 +35,14 @@ tau, ssa, g, L_snw = mix_in_impurities(
     ssa_snw, g_snw, mac_snw, ice, impurities, snicar_config
 )
 
-# print("Fd, Fs = ", illumination.Fd, illumination.Fs)
-
 # create an object to store the snicar column OPs
 optical_properties = OpticalPropertiesForDisort(ssa, tau, g, L_snw) 
 pf = np.zeros((128, 5)) # TODO update with real pmom calculation
-disort_config = DisortConfig(input_file,snicar_config, ice, illumination, optical_properties, pf)
+disort_config = DisortConfig(input_file,snicar_config, ice, optical_properties, pf)
 
 # set incident intensities 
-disort_config.fbeam = get_intensity_of_direct_beam(disort_config)
-disort_config.fisot = get_diffuse_intensity(disort_config)
+disort_config.fbeam = get_intensity_of_direct_beam(disort_config) # set direct radiation
+disort_config.fisot = get_diffuse_intensity(disort_config) # set diffuse radiation
 # print("FBEAM", disort_config.fbeam)
 # print("FISOT", disort_config.fisot)
 
@@ -76,6 +69,8 @@ empty_bemst, disort_config.debug, disort_config.azimuth_angle, disort_config.phi
 
 # do disort and wrangtle an output to plot
 alb =[]
+
+
 for i in range(480):
     
     rfldir, rfldn, flup, dfdt, uavg, uu, albedo_medium, trnmed = disort.disort(disort_config.usr_ang, 
@@ -98,10 +93,8 @@ for i in range(480):
     rfldn_av = np.mean(rfldn) 
     alb.append(flup_av/(rfldir_av+rfldn_av))
 
-print(alb)
-plt.plot(alb)
+
+plt.plot(snicar_config.wavelengths[0:200], alb[0:200])
+plt.xlabel("wavelength (um)")
+plt.ylabel("albedo")
 plt.show()
-# plt.plot(snicar_config.wavelengths[0:200], alb[0:200])
-# plt.xlabel("wavelength (um)")
-# plt.ylabel("albedo")
-# plt.show()

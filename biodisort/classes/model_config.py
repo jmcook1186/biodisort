@@ -11,7 +11,7 @@ class DisortConfig:
 
     """
 
-    def __init__(self, input_file, snicar_config, ice, illumination, optical_properties_for_disort, phase_function):
+    def __init__(self, input_file, snicar_config, ice, optical_properties_for_disort, phase_function):
         with open(input_file, "r") as ymlfile:
             inputs = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
@@ -20,11 +20,11 @@ class DisortConfig:
         self.n_azimuth = inputs["DISORT"]["CONFIG"]["N_AZIMUTH"]
         self.azimuth_angle = inputs["DISORT"]["ORIENTATION"]["AZIMUTH_ANGLE"]
         self.emission_angles = inputs["DISORT"]["ORIENTATION"]["EMISSION_ANGLES"]
-        self.direct = inputs["RTM"]["DIRECT"]
-        self.diffuse = inputs["RTM"]["DIFFUSE"]
+        self.direct = inputs["ILLUMINATION"]["DIRECT"]
+        self.diffuse = inputs["ILLUMINATION"]["DIFFUSE"]
         self.layer_thicknesses = ice.dz
         self.nbr_lyr= ice.nbr_lyr
-        self.solar_zenith_angle = illumination.solzen
+        self.solar_zenith_angle = inputs["ILLUMINATION"]["SOLZEN"]
         self.optical_depth = optical_properties_for_disort.tau
         self.ss_alb= optical_properties_for_disort.ssa
         self.umu0 = np.cos(np.radians(self.solar_zenith_angle))

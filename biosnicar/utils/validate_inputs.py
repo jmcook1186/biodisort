@@ -22,7 +22,6 @@ def validate_inputs(ice, illumination, impurities):
     """
     print("\n** Validating model configuration **")
     validate_snow_algae(impurities)
-    validate_illumination(illumination)
     validate_ice(ice)
     validate_glacier_algae(impurities)
     return
@@ -117,33 +116,6 @@ def validate_glacier_algae(impurities):
 
     return
 
-
-def validate_illumination(illumination):
-    """Validates illumination.
-
-    Args:
-        illumination: a list of Impurity objects
-
-    Returns:
-        None
-
-    Raises:
-        ValueError when SZA or nbr_wvl outside valid range
-
-    """
-
-    if (illumination.solzen > 89) or (illumination.solzen < 1):
-        raise ValueError("SZA outside valid range")
-
-    if illumination.nbr_wvl != 480:
-        raise ValueError("Illumination has incorrect number of wavelengths")
-
-    if illumination.direct > 1 or illumination.direct < 0:
-        raise ValueError("Beam type is incorrect: it should be 0 or 1")
-
-    print("illumination OK")
-
-    return
 
 
 def validate_ice(ice):
