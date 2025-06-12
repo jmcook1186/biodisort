@@ -14,10 +14,12 @@ def get_intensity_of_direct_beam(disort_config: DisortConfig):
     """
     if disort_config.direct:
         solzen = disort_config.solar_zenith_angle
-        cloud_stub = "_clr_"
+        cloud_stub = "_clr_"       
         coszen_stub = str("SZA" + str(solzen).rjust(2, "0"))
         incoming_file = xr.open_dataset(
-            str("/home/joe/Code/biosnicar-py/Data/OP_data/480band/fsds/swnb_480bnd_mls"
+            str("/home/joe/Code/biosnicar-py/Data/OP_data/480band/fsds/swnb_480bnd_"
+                + disort_config.region
+                + disort_config.season
                 + cloud_stub
                 + coszen_stub
                 + ".nc"
@@ -39,7 +41,9 @@ def get_diffuse_intensity(disort_config: DisortConfig):
         solzen = disort_config.solar_zenith_angle
         cloud_stub = "_cld"
         incoming_file = xr.open_dataset(
-            str("/home/joe/Code/biosnicar-py/Data/OP_data/480band/fsds/swnb_480bnd_mls"
+            str("/home/joe/Code/biosnicar-py/Data/OP_data/480band/fsds/swnb_480bnd_"
+                + disort_config.region
+                + disort_config.season                
                 + cloud_stub
                 + ".nc"
             )

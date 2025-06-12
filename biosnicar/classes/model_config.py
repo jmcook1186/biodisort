@@ -41,6 +41,5 @@ class ModelConfig:
         self.bubbly_ice_path = inputs["PATHS"]["BUBBLY_ICE"]
         self.ri_ice_path = inputs["PATHS"]["RI_ICE"]
         self.op_dir_stubs = inputs["PATHS"]["OP_DIR_STUBS"]
-        self.savefigpath = inputs["PLOT"]["SAVEPATH"]
         self.wavelengths = np.arange(0.205, 4.999, 0.01)
         self.nbr_wvl = len(self.wavelengths)

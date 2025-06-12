@@ -7,6 +7,8 @@ CTRL:
   POLY_ORDER: 3
 
 ILLUMINATION:
+  REGION: ml # ml = mid-latitude, p = polar
+  SEASON: s # w = winter, s = summer
   SOLZEN: 40
   DIRECT: True # include direct beam @ solzen?
   DIFFUSE: True # include diffuse irradiance?

@@ -22,6 +22,8 @@ class DisortConfig:
         self.emission_angles = inputs["DISORT"]["ORIENTATION"]["EMISSION_ANGLES"]
         self.direct = inputs["ILLUMINATION"]["DIRECT"]
         self.diffuse = inputs["ILLUMINATION"]["DIFFUSE"]
+        self.season = inputs["ILLUMINATION"]["SEASON"]
+        self.region = inputs["ILLUMINATION"]["REGION"]
         self.layer_thicknesses = ice.dz
         self.nbr_lyr= ice.nbr_lyr
         self.solar_zenith_angle = inputs["ILLUMINATION"]["SOLZEN"]
