@@ -9,6 +9,9 @@ This project builds on two existing projects:
 [biosnicar](https://github.com/jmcook1186/biosnicar-py)
 [pydisort](https://github.com/mjwolff/pyDISORT)
 
+You need to have `biosnicar` downloaded locally and the path to the top level biosnicar directory set in inputs.yaml (`SNICAR_BASE_PATH`). This enabled `biodisort` to grab optical property data for ice, water and impurities from the `biosnicar` database.
+
+
 ## setup
 
 ```

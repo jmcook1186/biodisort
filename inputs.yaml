@@ -30,12 +30,10 @@ ICE:
 PATHS:
   SNICAR_BASE_PATH: "/home/joe/Code/biosnicar-py"
   WVL: "Data/OP_data/wavelengths.csv"
-  SPHERE_ICE:  "Data/OP_data/480band/ice_spherical_grains/"
-  # SPHERE_ICE:  "Data/OP_data/480band/ice_spherical_grains_BH83/"
+  SPHERE_ICE:  "Data/OP_data/480band/ice_spherical_grains/" # change to ice_spherical_grains_BH83/ to use Bohren and Huffman 1983 refractive indices
   SPHERE_WATER:  "Data/OP_data/480band/water_spherical_grains/"
   HEX_ICE: "Data/OP_data/480band/ice_hexagonal_columns/"
-  BUBBLY_ICE: "Data/OP_data/480band/bubbly_ice_files/"
-  # BUBBLY_ICE: "Data/OP_data/480band/bubbly_ice_files_BH83/"
+  BUBBLY_ICE: "Data/OP_data/480band/bubbly_ice_files/" # change to bubbly_ice_files_BH83/ to use Bohren and Huffman 1983 refractive indices
   RI_ICE: "Data/OP_data/480band/"
   OP_DIR_STUBS: ["ice_Wrn84/ice_Wrn84_", "ice_Wrn08/ice_Wrn08_", "ice_Pic16/ice_Pic16_"]
   SFC: "/Data/OP_data/480band/r_sfc/blue_ice_spectrum_s10290721.csv"
@@ -70,21 +68,6 @@ IMPURITIES:
     UNIT: 1
     CONC: [0 ,0, 0, 0, 0]
 
-PLOT:
-    FIG_SIZE: (8,6)
-    FACECOLOR: "white"
-    GRID: False
-    GRIDCOLOR: ".8"
-    XTICK_WIDTH: 1
-    XTICK_SIZE: 5
-    YTICK_WIDTH: 1
-    YTICK_SIZE: 5
-    LINEWIDTH: 1.25
-    FONTSIZE: 20
-    XTICK_BTM: True
-    YTICK_LEFT: True
-    SAVE: False
-    SAVEPATH: ""
 
 DISORT:
   CONFIG:
