@@ -25,7 +25,6 @@ def setup_snicar(input_file):
     # define input file
     if input_file == "default":
         BIODISORT_SRC_PATH = Path(__file__).resolve().parent.parent
-        print("BIODISORT_SRC_PATH in setup_snicar.py: ", BIODISORT_SRC_PATH)
         input_file = BIODISORT_SRC_PATH.joinpath("../inputs.yaml").as_posix()
 
     else:
@@ -37,7 +36,6 @@ def setup_snicar(input_file):
         model_config,
     ) = build_classes(input_file)
 
-    print(model_config.window_size)
     return (
         ice,
         model_config,

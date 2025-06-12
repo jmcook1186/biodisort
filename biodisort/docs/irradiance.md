@@ -20,6 +20,22 @@ DISORT (Discrete Ordinates Radiative Transfer) is a powerful model used to solve
 - **PHI0**: Azimuth angle of the sun, measured from the positive x-axis (usually north).
 - **Role**: These variables, along with `FBEAM`, fully specify the direction and intensity of the incoming solar radiation.
 
+### SOLZEN
+- **Definition**: `SOLZEN` is the solar zenith angle, in degrees.
+- **Values**: 0-90
+- **Role**: This is used to derive `UMU0`
+
+### SEASON
+- **Definition**: Season/region/solzen is used to determine at surface irradiance. Depending on the region/season/solzen combinationa  different irradiance file is loaded in and used to configure `FBEAM` and `FISOT`.
+- **Values**: "s", "w"
+- **Role**: `SEASON` tells biodisort to grab files for summer or winter irradiance for a given region. These form the file stubs for reading in appropriate irradiance files.
+  
+### REGION
+- **Definition**: Season/region/solzen is used to determine at surface irradiance. Depending on the region/season/solzen combinationa  different irradiance file is loaded in and used to configure `FBEAM` and `FISOT`.
+- **Values**: "ml", "p" 
+- **Role**: `REGION` tells biodisort to grab files for summer or winter irradiance for a given region. These form the file stubs for reading in appropriate irradiance files.
+
+
 ## Isotropic Incident Radiation
 
 When `FBEAM = 0` and the incident radiation is isotropic, the intensity at the top of the atmosphere is uniform in all directions. The intensity \( I \) is given by:

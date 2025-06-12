@@ -1,11 +1,6 @@
 
 # SNICAR
 
-CTRL:
-  SMOOTH: True
-  WINDOW_SIZE: 7
-  POLY_ORDER: 3
-
 ILLUMINATION:
   REGION: ml # ml = mid-latitude, p = polar
   SEASON: s # w = winter, s = summer
