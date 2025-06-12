@@ -35,9 +35,9 @@ python biodisort/main.py
 1) Check all array sizes and make sure they dynamically update correctly across snicar and disort params
 2) Check brdf/surface generation and implement in the main flow
 3) Create detailed input validation function that ensures internal consistency in all config
-4) Synchronize snicar and disort illumination params
-5) Implement output handling - we currently get viewing angle arrays at individual wavelengths - we want to have options to get angular intensities or hemispheric spectral values, and also broadband
-6) Remove unneccessary snicar code
-7) Make sure default disort config is sensible for an ice column under combination direct/diffue illumination
+4) Synchronize snicar and disort illumination params *(done - but can be improved for cases where there are both diffuse and direct components)*
+5) Implement output handling - we currently get viewing angle arrays at individual wavelengths - we want to have options to get angular intensities or hemispheric spectral values, and also broadband (done some basic output wrangling - need to add more control)
+6) Remove unneccessary snicar code (*done a good amount of stripping - maybe some more still to find*)
+7) Make sure default disort config is sensible for an ice column under combination direct/diffuse illumination
 8) Docs!
 9) Tests!
