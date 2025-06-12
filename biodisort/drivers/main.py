@@ -43,8 +43,13 @@ disort_config = DisortConfig(input_file,snicar_config, ice, optical_properties, 
 # set incident intensities 
 disort_config.fbeam = get_intensity_of_direct_beam(disort_config) # set direct radiation
 disort_config.fisot = get_diffuse_intensity(disort_config) # set diffuse radiation
-# print("FBEAM", disort_config.fbeam)
-# print("FISOT", disort_config.fisot)
+
+# plt.plot(disort_config.fbeam)
+# plt.plot(disort_config.fisot)
+# plt.plot(disort_config.fbeam+disort_config.fisot)
+# print(np.sum(disort_config.fbeam+disort_config.fisot))
+# plt.show()
+
 
 albedo_medium = np.zeros((disort_config.n_polar,))
 diffuse_up_flux = np.zeros((disort_config.nbr_lyr))
@@ -69,10 +74,10 @@ empty_bemst, disort_config.debug, disort_config.azimuth_angle, disort_config.phi
 
 # do disort and wrangtle an output to plot
 alb =[]
-
+intensities = np.zeros(shape=(480,17,5,1))
 
 for i in range(480):
-    
+    print("WL = ", snicar_config.wavelengths[i])
     rfldir, rfldn, flup, dfdt, uavg, uu, albedo_medium, trnmed = disort.disort(disort_config.usr_ang, 
     disort_config.usr_tau, disort_config.boundary_conditions, disort_config.onlyfl, disort_config.prnt,
     disort_config.plank, disort_config.lambertian, disort_config.deltamplus, disort_config.do_pseudo_sphere, 
@@ -93,8 +98,16 @@ for i in range(480):
     rfldn_av = np.mean(rfldn) 
     alb.append(flup_av/(rfldir_av+rfldn_av))
 
+    intensities[i,:,:,:] = uu
 
-plt.plot(snicar_config.wavelengths[0:200], alb[0:200])
-plt.xlabel("wavelength (um)")
-plt.ylabel("albedo")
+for i in range(17):
+    plt.plot(intensities[0:100,i,0,0], label = f"polar angle {i+1}")
+plt.xlabel("wavelength")
+plt.ylabel("intensity (Wm-2)")
+plt.legend()
 plt.show()
+
+# plt.plot(alb)
+# plt.xlabel("wavelength (um)")
+# plt.ylabel("albedo")
+# plt.show()

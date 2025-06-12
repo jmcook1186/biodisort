@@ -4,9 +4,9 @@
 ILLUMINATION:
   REGION: ml # ml = mid-latitude, p = polar
   SEASON: s # w = winter, s = summer
-  SOLZEN: 40
+  SOLZEN: 45
   DIRECT: True # include direct beam @ solzen?
-  DIFFUSE: True # include diffuse irradiance?
+  DIFFUSE: False # include diffuse irradiance?
 
 ICE:
   DZ: [0.02,0.1, 0.1, 0.1, 0.1]  # thickness of each vertical layer (unit : m)
@@ -76,7 +76,7 @@ DISORT:
     USR_ANG: True
     USR_TAU: True
     ONLYFL: False
-    PRNT: [True, False, False, False, False]
+    PRNT: [False, False, False, False, False]
     PLANK: False
     LAMBERTIAN: True
     DELTAMPLUS: True

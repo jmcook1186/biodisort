@@ -1,7 +1,6 @@
-# Irradiance in DISORT
-# DISORT Surface Irradiance Calculation
+# Irradiance in bioDISORT
 
-DISORT (Discrete Ordinates Radiative Transfer) is a powerful model used to solve the radiative transfer equation in plane-parallel media, such as the Earth's atmosphere. One of the key outputs of DISORT is the surface irradiance, which is the amount of radiation reaching the Earth's surface. This documentation summarizes how DISORT handles surface irradiance, including the roles of `FBEAM` and `FISOT`, and provides a detailed explanation of isotropic irradiance.
+DISORT (Discrete Ordinates Radiative Transfer) is a powerful model used to solve the radiative transfer equation in plane-parallel media, such as the Earth's atmosphere. One of the key outputs of DISORT is the surface irradiance, which is the amount of radiation reaching the Earth's surface. However, `biodisort` is primarily concerned with the radiative transfer in a column of ice sitting at the bottom of the atmosphere. This means we do not want all the calculations to begin with the solar constant - we want our unattenuated irradiance to be the bottom of atmosphere, or surface, irradiance. Therefore, we have to do a little adjusting of DISORT's config. We use the database of at-surface irradiance intensities from the `biosnicar` model (which themselves were precalculated using vanilla DISORT). We can prescribe a broad region (mid-latitude, polar) and season (summer, winter) and a solar zenith angle and then look up spectral at-surface irradiance intensities to pass to DISORT. This page will explain that process, clarify the variables used and the flow of information through `biodisort`.
 
 ## Key Variables
 
@@ -18,7 +17,7 @@ DISORT (Discrete Ordinates Radiative Transfer) is a powerful model used to solve
 ### UMU0 and PHI0
 - **UMU0**: Cosine of the solar zenith angle, specifying the direction of the incoming solar beam.
 - **PHI0**: Azimuth angle of the sun, measured from the positive x-axis (usually north).
-- **Role**: These variables, along with `FBEAM`, fully specify the direction and intensity of the incoming solar radiation.
+- **Role**: These variables, along with `FBEAM`, fully specify the direction and angle of the incoming solar radiation.
 
 ### SOLZEN
 - **Definition**: `SOLZEN` is the solar zenith angle, in degrees.
@@ -26,12 +25,12 @@ DISORT (Discrete Ordinates Radiative Transfer) is a powerful model used to solve
 - **Role**: This is used to derive `UMU0`
 
 ### SEASON
-- **Definition**: Season/region/solzen is used to determine at surface irradiance. Depending on the region/season/solzen combinationa  different irradiance file is loaded in and used to configure `FBEAM` and `FISOT`.
+- **Definition**: Season/region/solzen is used to determine at surface irradiance. Depending on the region/season/solzen combination a different irradiance file is loaded in and used to define `FISOT`.
 - **Values**: "s", "w"
 - **Role**: `SEASON` tells biodisort to grab files for summer or winter irradiance for a given region. These form the file stubs for reading in appropriate irradiance files.
   
 ### REGION
-- **Definition**: Season/region/solzen is used to determine at surface irradiance. Depending on the region/season/solzen combinationa  different irradiance file is loaded in and used to configure `FBEAM` and `FISOT`.
+- **Definition**: Season/region/solzen is used to determine at surface irradiance. Depending on the region/season/solzen combinationa  different irradiance file is loaded in and used to configure `FISOT`.
 - **Values**: "ml", "p" 
 - **Role**: `REGION` tells biodisort to grab files for summer or winter irradiance for a given region. These form the file stubs for reading in appropriate irradiance files.
 

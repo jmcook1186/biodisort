@@ -25,10 +25,11 @@ def get_intensity_of_direct_beam(disort_config: DisortConfig):
                 + ".nc"
             )
         )
-        flx_slr = incoming_file["flx_frc_sfc"].values
+
+        flx_slr = incoming_file["flx_dwn_sfc"].values
         flx_slr[flx_slr <= 0] = 1e-30
     else:
-        flx_slr = np.zeros(480)
+        flx_slr = np.zeros(480)*1e-30
     return flx_slr
 
 
@@ -48,9 +49,10 @@ def get_diffuse_intensity(disort_config: DisortConfig):
                 + ".nc"
             )
         )
-        flx_slr = incoming_file["flx_frc_sfc"].values
+
+        flx_slr = incoming_file["flx_dwn_sfc"].values
         flx_slr[flx_slr <= 0] = 1e-30
     else:
-        flx_slr = np.zeros(480)
+        flx_slr = np.zeros(480)*1e-30
 
     return flx_slr
