@@ -69,21 +69,21 @@ IMPURITIES:
 DISORT:
   CONFIG:
     N_STREAMS: 32
-    N_POLAR: 17
+    N_POLAR: 9 # default - updated during setup to match length of EMISSION_ANGLES
     N_AZIMUTH: 1
     BOUNDARY_CONDITIONS: False
     PHI0: 0
     USR_ANG: True
     USR_TAU: True
     ONLYFL: False
-    PRNT: [False, False, False, False, False]
+    PRNT: [True, True, False, False, False]
     PLANK: False
     LAMBERTIAN: True
     DELTAMPLUS: True
     DO_PSEUDO_SPHERE: False
-    FISOT: 0.8
-    FBEAM: 3.14
-    ALBEDO: 0.1
+    FISOT: 0.08 # default - overwritten during setup
+    FBEAM: 3.14 # default - overwritten during setup
+    ALBEDO: 0.01
     BTEMP: 273.15
     TTEMP: 273.15
     TEMIS: 273.15
@@ -101,7 +101,7 @@ DISORT:
 
   ORIENTATION:
     AZIMUTH_ANGLE: 0
-    EMISSION_ANGLES: [85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5] # "viewing angles"
+    EMISSION_ANGLES: [80, 70, 60, 50, 40, 30, 20, 10, 5] # "viewing angles"
   
   ICE:
     TEMPERATURES: [273.15, 273.15, 273.15, 273.15, 273.15, 273.15]

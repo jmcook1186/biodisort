@@ -74,7 +74,7 @@ empty_bemst, disort_config.debug, disort_config.azimuth_angle, disort_config.phi
 
 # do disort and wrangtle an output to plot
 alb =[]
-intensities = np.zeros(shape=(480,17,5,1))
+intensities = np.zeros(shape=(disort_config.nbr_wvl,disort_config.n_polar,disort_config.nbr_lyr,1))
 
 for i in range(480):
     print("WL = ", snicar_config.wavelengths[i])
@@ -100,8 +100,8 @@ for i in range(480):
 
     intensities[i,:,:,:] = uu
 
-for i in range(17):
-    plt.plot(intensities[0:100,i,0,0], label = f"polar angle {i+1}")
+for i in range(9):
+    plt.plot(intensities[0:100,i,0,0], label = f"emission ang {disort_config.emission_angles[i]} deg")
 plt.xlabel("wavelength")
 plt.ylabel("intensity (Wm-2)")
 plt.legend()

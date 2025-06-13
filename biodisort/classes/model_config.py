@@ -16,15 +16,16 @@ class DisortConfig:
             inputs = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
         self.n_streams = inputs["DISORT"]["CONFIG"]["N_STREAMS"]
-        self.n_polar = inputs["DISORT"]["CONFIG"]["N_POLAR"]
         self.n_azimuth = inputs["DISORT"]["CONFIG"]["N_AZIMUTH"]
         self.azimuth_angle = inputs["DISORT"]["ORIENTATION"]["AZIMUTH_ANGLE"]
         self.emission_angles = inputs["DISORT"]["ORIENTATION"]["EMISSION_ANGLES"]
+        self.n_polar = len(self.emission_angles)
         self.direct = inputs["ILLUMINATION"]["DIRECT"]
         self.diffuse = inputs["ILLUMINATION"]["DIFFUSE"]
         self.season = inputs["ILLUMINATION"]["SEASON"]
         self.region = inputs["ILLUMINATION"]["REGION"]
         self.layer_thicknesses = ice.dz
+        self.nbr_wvl = snicar_config.nbr_wvl
         self.nbr_lyr= ice.nbr_lyr
         self.solar_zenith_angle = inputs["ILLUMINATION"]["SOLZEN"]
         self.optical_depth = optical_properties_for_disort.tau
