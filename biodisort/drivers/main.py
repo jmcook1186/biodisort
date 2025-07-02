@@ -7,103 +7,53 @@ path_root = Path(__file__).parents[2]
 sys.path.append(str(path_root))
 import numpy as np
 import matplotlib.pyplot as plt
-from biosnicar.utils.validate_inputs import validate_inputs
-from biosnicar.optical_properties.column_OPs import get_layer_OPs, mix_in_impurities
-from biosnicar.drivers.setup_snicar import setup_snicar
+from biodisort.utils.get_column_ops import get_column_ops
 from biodisort.classes.optical_properties_for_disort import OpticalPropertiesForDisort
 from biodisort.classes.model_config import DisortConfig
 from biodisort.classes.outputs import DisortOutputs
 from biodisort.classes.brdf_config import BrdfConfig
-from biodisort.utils.get_incident_intensities import get_intensity_of_direct_beam, get_diffuse_intensity
+from biodisort.utils.get_incident_intensities import (
+    get_intensity_of_direct_beam,
+    get_diffuse_intensity,
+)
+from biodisort.brdf.get_brdf import get_brdf
+from biodisort.drivers.run_disort import run_disort
 import disort
 
+## Set paths
 BIODISORT_SRC_PATH = Path(__file__).resolve().parent.parent.parent
-print("BIODISORT_SRC_PATH in setup_snicar.py: ", BIODISORT_SRC_PATH)
 input_file = BIODISORT_SRC_PATH.joinpath("inputs.yaml").as_posix()
 
 
-# first build the ice column and illumination conditions by instantiating the relevant classes from snicar
-(
-ice,
-snicar_config,
-impurities,
-) = setup_snicar("default")
+optical_properties, snicar_config, ice = get_column_ops()
 
-# validate the inputs
-# validate_inputs(ice, impurities)
 
-# now get the optical properties of the ice column
-ssa_snw, g_snw, mac_snw = get_layer_OPs(ice, snicar_config)
-tau, ssa, g, L_snw = mix_in_impurities(
-    ssa_snw, g_snw, mac_snw, ice, impurities, snicar_config
-)
-
-# create an object to store the snicar column OPs
-optical_properties = OpticalPropertiesForDisort(ssa, tau, g, L_snw) 
-brdf_config = BrdfConfig(input_file)
-pf = np.zeros((128, 5)) # TODO update with real pmom calculation
+pf = np.zeros((128, 5))  # TODO update with real pmom calculation
 disort_config = DisortConfig(input_file, snicar_config, ice, optical_properties, pf)
+brdf_config = BrdfConfig(input_file, disort_config)
+# set incident intensities
+disort_config.fbeam = get_intensity_of_direct_beam(
+    disort_config
+)  # set direct radiation
+disort_config.fisot = get_diffuse_intensity(disort_config)  # set diffuse radiation
 
-# set incident intensities 
-disort_config.fbeam = get_intensity_of_direct_beam(disort_config) # set direct radiation
-disort_config.fisot = get_diffuse_intensity(disort_config) # set diffuse radiation
-
-
-albedo_medium = np.zeros((disort_config.n_polar,))
-diffuse_up_flux = np.zeros((disort_config.nbr_lyr))
-diffuse_down_flux = np.zeros((disort_config.nbr_lyr))
-direct_beam_flux = np.ones((disort_config.nbr_lyr,))
-flux_divergence = np.zeros((disort_config.nbr_lyr,))
-intensity = np.zeros((disort_config.n_polar, disort_config.nbr_lyr, 1))
-mean_intensity = np.zeros((disort_config.nbr_lyr,))
-transmissivity_medium = np.zeros((disort_config.n_polar,))
-
-
-brdf_arg = np.array([1, 0.6, 0.06, 0.001, 0.0001, 0.00001])
-empty_bemst = np.zeros((16,))
-empty_emust = np.zeros((disort_config.n_polar,))
-empty_rho_accurate = np.zeros((disort_config.n_polar, 1))
-empty_rhou = np.zeros((disort_config.n_streams, disort_config.n_streams//2 + 1, disort_config.n_streams))
-empty_rhoq = np.zeros((disort_config.n_streams//2, disort_config.n_streams//2 + 1, disort_config.n_streams))
-
-
-# do brdf
-rhoq, rhou, emust, bemst, rho_accurate = disort.disobrdf(disort_config.usr_ang, disort_config.umu, disort_config.fbeam, disort_config.umu0, disort_config.lambertian, disort_config.albedo, disort_config.onlyfl, empty_rhoq, empty_rhou, empty_emust,
-empty_bemst, disort_config.debug, disort_config.azimuth_angle, disort_config.phi0, empty_rho_accurate, brdf_config.brdf_type, brdf_arg, disort_config.nmug, disort_config.n_streams, numu=disort_config.n_polar, nphi=disort_config.n_azimuth)
-
-
+# make outputs object
 outputs = DisortOutputs(disort_config)
 
-for i in range(480):
-    print("WL = ", snicar_config.wavelengths[i])
-    rfldir, rfldn, flup, dfdt, uavg, uu, albedo_medium, trnmed = disort.disort(disort_config.usr_ang, 
-    disort_config.usr_tau, disort_config.boundary_conditions, disort_config.onlyfl, disort_config.prnt,
-    disort_config.plank, disort_config.lambertian, disort_config.deltamplus, disort_config.do_pseudo_sphere, 
-    disort_config.optical_depth[:,i], disort_config.ss_alb[:,i], disort_config.pmom, 
-    disort_config.temperatures, disort_config.wavenumber_low, disort_config.wavenumber_high, 
-    disort_config.utau, disort_config.umu0, disort_config.phi0, disort_config.umu, disort_config.azimuth_angle,
-    disort_config.fbeam[i], disort_config.fisot[i], disort_config.albedo, disort_config.btemp, disort_config.ttemp, 
-    disort_config.temis, disort_config.earth_radius, disort_config.lyr_height, empty_rhoq, empty_rhou, 
-    empty_rho_accurate, empty_bemst, empty_emust, disort_config.accuracy, disort_config.header, 
-    direct_beam_flux, diffuse_down_flux, diffuse_up_flux, flux_divergence, mean_intensity, intensity, 
-    albedo_medium, transmissivity_medium, maxcmu=disort_config.n_streams, maxulv=disort_config.nbr_lyr, maxmom=127)
 
-    # remember each output is an array over viewing angles - for now just take the mean over angle
-    # for each wavelength and bung it in an output array
-    # calculate hemispheric means
-    flup_av = np.mean(flup)
-    rfldir_av= np.mean(rfldir)
-    rfldn_av = np.mean(rfldn)
+# get brdf
+rhoq, rhou, emust, bemst, rho_accurate = get_brdf(disort_config, brdf_config)
 
-    # albedo is total upwards flux divided by total downwards flux
-    outputs.spectral_albedo[i] = (flup_av/(rfldir_av+rfldn_av))
-    # intensities come in the form intensities[wvl, emission-angle, lyr, value]
-    outputs.intensities[i,:,:,:] = uu
 
+
+outputs = run_disort(disort_config, brdf_config)
 
 
 for i in range(9):
-    plt.plot(outputs.intensities[0:100,i,0,0], label = f"emission ang {disort_config.emission_angles[i]} deg")
+    plt.plot(
+        outputs.intensities[0:100, i, 0, 0],
+        label=f"emission ang {disort_config.emission_angles[i]} deg",
+    )
 plt.xlabel("wavelength")
 plt.ylabel("intensity (Wm-2)")
 plt.legend()
