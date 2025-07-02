@@ -30,8 +30,7 @@ optical_properties, snicar_config, ice = get_column_ops()
 
 pf = np.zeros((128, 5))  # TODO update with real pmom calculation
 disort_config = DisortConfig(input_file, snicar_config, ice, optical_properties, pf)
-
-brdf_config = BrdfConfig(input_file, disort_config)
+brdf_config = BrdfConfig(input_file, disort_config, optical_properties)
 # set incident intensities
 disort_config.fbeam = get_intensity_of_direct_beam(
     disort_config
@@ -40,13 +39,7 @@ disort_config.fisot = get_diffuse_intensity(disort_config)  # set diffuse radiat
 
 
 # get brdf
-(
-    brdf_config.rhoq,
-    brdf_config.rhou,
-    brdf_config.emust,
-    brdf_config.bemst,
-    brdf_config.rho_accurate,
-) = get_brdf(disort_config, brdf_config)
+brdf_config = get_brdf(disort_config, brdf_config)
 
 outputs = run_disort(disort_config, brdf_config)
 
@@ -65,3 +58,7 @@ plt.plot(outputs.spectral_albedo)
 plt.xlabel("wavelength (um)")
 plt.ylabel("albedo")
 plt.show()
+
+print("BBA: ", sum(outputs.spectral_albedo))
+
+# 94.83398393451716

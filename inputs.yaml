@@ -78,7 +78,7 @@ DISORT:
     ONLYFL: False
     PRNT: [False, False, False, False, False]
     PLANK: False
-    LAMBERTIAN: True
+    LAMBERTIAN: False
     DELTAMPLUS: True
     DO_PSEUDO_SPHERE: False
     FISOT: 0.08 # default - overwritten during setup
@@ -104,7 +104,11 @@ DISORT:
   
   ICE:
     TEMPERATURES: [273.15, 273.15, 273.15, 273.15, 273.15, 273.15]
+    ROUGHNESS: 1
 
   BRDF:
     BRDF_TYPE: 1
-    BRDF_ARG: [1, 0.6, 0.06, 0.001, 0.0001, 0.00001]
+    ROUGHNESS: 0.1
+    B0: 1
+    H: 0.9
+    FRAC: 0.9
