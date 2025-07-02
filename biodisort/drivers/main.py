@@ -13,6 +13,7 @@ from biosnicar.drivers.setup_snicar import setup_snicar
 from biodisort.classes.optical_properties_for_disort import OpticalPropertiesForDisort
 from biodisort.classes.model_config import DisortConfig
 from biodisort.classes.outputs import DisortOutputs
+from biodisort.classes.brdf_config import BrdfConfig
 from biodisort.utils.get_incident_intensities import get_intensity_of_direct_beam, get_diffuse_intensity
 import disort
 
@@ -39,8 +40,9 @@ tau, ssa, g, L_snw = mix_in_impurities(
 
 # create an object to store the snicar column OPs
 optical_properties = OpticalPropertiesForDisort(ssa, tau, g, L_snw) 
+brdf_config = BrdfConfig(input_file)
 pf = np.zeros((128, 5)) # TODO update with real pmom calculation
-disort_config = DisortConfig(input_file,snicar_config, ice, optical_properties, pf)
+disort_config = DisortConfig(input_file, snicar_config, ice, optical_properties, pf)
 
 # set incident intensities 
 disort_config.fbeam = get_intensity_of_direct_beam(disort_config) # set direct radiation
@@ -56,7 +58,7 @@ intensity = np.zeros((disort_config.n_polar, disort_config.nbr_lyr, 1))
 mean_intensity = np.zeros((disort_config.nbr_lyr,))
 transmissivity_medium = np.zeros((disort_config.n_polar,))
 
-brdf_type = 1
+
 brdf_arg = np.array([1, 0.6, 0.06, 0.001, 0.0001, 0.00001])
 empty_bemst = np.zeros((16,))
 empty_emust = np.zeros((disort_config.n_polar,))
@@ -67,7 +69,7 @@ empty_rhoq = np.zeros((disort_config.n_streams//2, disort_config.n_streams//2 + 
 
 # do brdf
 rhoq, rhou, emust, bemst, rho_accurate = disort.disobrdf(disort_config.usr_ang, disort_config.umu, disort_config.fbeam, disort_config.umu0, disort_config.lambertian, disort_config.albedo, disort_config.onlyfl, empty_rhoq, empty_rhou, empty_emust,
-empty_bemst, disort_config.debug, disort_config.azimuth_angle, disort_config.phi0, empty_rho_accurate, 1, brdf_arg, disort_config.nmug, disort_config.n_streams, numu=disort_config.n_polar, nphi=disort_config.n_azimuth)
+empty_bemst, disort_config.debug, disort_config.azimuth_angle, disort_config.phi0, empty_rho_accurate, brdf_config.brdf_type, brdf_arg, disort_config.nmug, disort_config.n_streams, numu=disort_config.n_polar, nphi=disort_config.n_azimuth)
 
 
 outputs = DisortOutputs(disort_config)

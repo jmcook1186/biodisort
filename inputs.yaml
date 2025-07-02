@@ -76,7 +76,7 @@ DISORT:
     USR_ANG: True
     USR_TAU: True
     ONLYFL: False
-    PRNT: [True, True, False, False, False]
+    PRNT: [False, False, False, False, False]
     PLANK: False
     LAMBERTIAN: True
     DELTAMPLUS: True
@@ -98,10 +98,13 @@ DISORT:
     BEMST: 0
     RHO_ACCURATE: 0
 
-
   ORIENTATION:
     AZIMUTH_ANGLE: 0
     EMISSION_ANGLES: [80, 70, 60, 50, 40, 30, 20, 10, 5] # "viewing angles"
   
   ICE:
     TEMPERATURES: [273.15, 273.15, 273.15, 273.15, 273.15, 273.15]
+
+  BRDF:
+    BRDF_TYPE: 1
+    

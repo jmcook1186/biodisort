@@ -30,6 +30,8 @@ nano inputs.yaml
 python biodisort/drivers/main.py
 ```
 
+You'll get a plot of the intensity at each viewing angle and a plot of the spectral albedo (calculated using hemispheric mean).
+
 
 # TODO
 1) Check all array sizes and make sure they dynamically update correctly across snicar and disort params
