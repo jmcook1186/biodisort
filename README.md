@@ -27,7 +27,7 @@ nano inputs.yaml
 ## run
 
 ```
-python biodisort/main.py
+python biodisort/drivers/main.py
 ```
 
 

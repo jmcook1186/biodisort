@@ -3,6 +3,7 @@ import os
 
 from setuptools import find_packages, setup
 
+
 def read(rel_path):
     here = os.path.abspath(os.path.dirname(__file__))
     # intentionally *not* adding an encoding option to open, See:
@@ -25,15 +26,15 @@ setup(
     package_dir={"": "biodisort"},
     packages=find_packages(where="biodisort"),
     version=get_version("biodisort/__init__.py"),
-    author="BioSNICAR team",
+    author="Joseph Cook",
     author_email="biosnicar@proton.me",
     description="Snow and ice albedo modelling in Python",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     project_urls={
-        "Bug Tracker": "https://github.com/jmcook1186/biosnicar-py/issues",
-        "Source": "https://github.com/jmcook1186/biosnicar-py",
-        "Documentation": "https://biosnicar-go-py.readthedocs.io/en/latest/",
+        "Bug Tracker": "https://github.com/jmcook1186/biodisort-py/issues",
+        "Source": "https://github.com/jmcook1186/biodisort-py",
+        "Documentation": "",
     },
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -67,6 +68,6 @@ setup(
         "plotnine",
         "statsmodels",
         "pydisort",
-        "netcdf4"
+        "netcdf4",
     ],
 )

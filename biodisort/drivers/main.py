@@ -12,12 +12,14 @@ from biosnicar.optical_properties.column_OPs import get_layer_OPs, mix_in_impuri
 from biosnicar.drivers.setup_snicar import setup_snicar
 from biodisort.classes.optical_properties_for_disort import OpticalPropertiesForDisort
 from biodisort.classes.model_config import DisortConfig
+from biodisort.classes.outputs import DisortOutputs
 from biodisort.utils.get_incident_intensities import get_intensity_of_direct_beam, get_diffuse_intensity
 import disort
 
 BIODISORT_SRC_PATH = Path(__file__).resolve().parent.parent.parent
 print("BIODISORT_SRC_PATH in setup_snicar.py: ", BIODISORT_SRC_PATH)
 input_file = BIODISORT_SRC_PATH.joinpath("inputs.yaml").as_posix()
+
 
 # first build the ice column and illumination conditions by instantiating the relevant classes from snicar
 (
@@ -44,12 +46,6 @@ disort_config = DisortConfig(input_file,snicar_config, ice, optical_properties, 
 disort_config.fbeam = get_intensity_of_direct_beam(disort_config) # set direct radiation
 disort_config.fisot = get_diffuse_intensity(disort_config) # set diffuse radiation
 
-# plt.plot(disort_config.fbeam)
-# plt.plot(disort_config.fisot)
-# plt.plot(disort_config.fbeam+disort_config.fisot)
-# print(np.sum(disort_config.fbeam+disort_config.fisot))
-# plt.show()
-
 
 albedo_medium = np.zeros((disort_config.n_polar,))
 diffuse_up_flux = np.zeros((disort_config.nbr_lyr))
@@ -68,13 +64,13 @@ empty_rho_accurate = np.zeros((disort_config.n_polar, 1))
 empty_rhou = np.zeros((disort_config.n_streams, disort_config.n_streams//2 + 1, disort_config.n_streams))
 empty_rhoq = np.zeros((disort_config.n_streams//2, disort_config.n_streams//2 + 1, disort_config.n_streams))
 
+
 # do brdf
 rhoq, rhou, emust, bemst, rho_accurate = disort.disobrdf(disort_config.usr_ang, disort_config.umu, disort_config.fbeam, disort_config.umu0, disort_config.lambertian, disort_config.albedo, disort_config.onlyfl, empty_rhoq, empty_rhou, empty_emust,
 empty_bemst, disort_config.debug, disort_config.azimuth_angle, disort_config.phi0, empty_rho_accurate, 1, brdf_arg, disort_config.nmug, disort_config.n_streams, numu=disort_config.n_polar, nphi=disort_config.n_azimuth)
 
-# do disort and wrangtle an output to plot
-alb =[]
-intensities = np.zeros(shape=(disort_config.nbr_wvl,disort_config.n_polar,disort_config.nbr_lyr,1))
+
+outputs = DisortOutputs(disort_config)
 
 for i in range(480):
     print("WL = ", snicar_config.wavelengths[i])
@@ -92,22 +88,26 @@ for i in range(480):
 
     # remember each output is an array over viewing angles - for now just take the mean over angle
     # for each wavelength and bung it in an output array
-    # albedo is total upwards flux divided by total downwards flux
+    # calculate hemispheric means
     flup_av = np.mean(flup)
     rfldir_av= np.mean(rfldir)
-    rfldn_av = np.mean(rfldn) 
-    alb.append(flup_av/(rfldir_av+rfldn_av))
+    rfldn_av = np.mean(rfldn)
 
-    intensities[i,:,:,:] = uu
+    # albedo is total upwards flux divided by total downwards flux
+    outputs.spectral_albedo[i] = (flup_av/(rfldir_av+rfldn_av))
+    # intensities come in the form intensities[wvl, emission-angle, lyr, value]
+    outputs.intensities[i,:,:,:] = uu
+
+
 
 for i in range(9):
-    plt.plot(intensities[0:100,i,0,0], label = f"emission ang {disort_config.emission_angles[i]} deg")
+    plt.plot(outputs.intensities[0:100,i,0,0], label = f"emission ang {disort_config.emission_angles[i]} deg")
 plt.xlabel("wavelength")
 plt.ylabel("intensity (Wm-2)")
 plt.legend()
 plt.show()
 
-# plt.plot(alb)
-# plt.xlabel("wavelength (um)")
-# plt.ylabel("albedo")
-# plt.show()
+plt.plot(outputs.spectral_albedo)
+plt.xlabel("wavelength (um)")
+plt.ylabel("albedo")
+plt.show()
