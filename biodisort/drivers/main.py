@@ -3,6 +3,7 @@
 
 from pathlib import Path
 import sys
+
 path_root = Path(__file__).parents[2]
 sys.path.append(str(path_root))
 import numpy as np
@@ -24,12 +25,12 @@ import disort
 BIODISORT_SRC_PATH = Path(__file__).resolve().parent.parent.parent
 input_file = BIODISORT_SRC_PATH.joinpath("inputs.yaml").as_posix()
 
-
 optical_properties, snicar_config, ice = get_column_ops()
 
 
 pf = np.zeros((128, 5))  # TODO update with real pmom calculation
 disort_config = DisortConfig(input_file, snicar_config, ice, optical_properties, pf)
+
 brdf_config = BrdfConfig(input_file, disort_config)
 # set incident intensities
 disort_config.fbeam = get_intensity_of_direct_beam(
@@ -37,14 +38,15 @@ disort_config.fbeam = get_intensity_of_direct_beam(
 )  # set direct radiation
 disort_config.fisot = get_diffuse_intensity(disort_config)  # set diffuse radiation
 
-# make outputs object
-outputs = DisortOutputs(disort_config)
-
 
 # get brdf
-rhoq, rhou, emust, bemst, rho_accurate = get_brdf(disort_config, brdf_config)
-
-
+(
+    brdf_config.rhoq,
+    brdf_config.rhou,
+    brdf_config.emust,
+    brdf_config.bemst,
+    brdf_config.rho_accurate,
+) = get_brdf(disort_config, brdf_config)
 
 outputs = run_disort(disort_config, brdf_config)
 
