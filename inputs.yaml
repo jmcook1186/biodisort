@@ -78,7 +78,7 @@ DISORT:
     ONLYFL: False
     PRNT: [False, False, False, False, False]
     PLANK: False
-    LAMBERTIAN: False
+    LAMBERTIAN: True
     DELTAMPLUS: True
     DO_PSEUDO_SPHERE: False
     FISOT: 0.08 # default - overwritten during setup
@@ -97,6 +97,7 @@ DISORT:
     EMUST: 0
     BEMST: 0
     RHO_ACCURATE: 0
+    NMOM: 50
 
   ORIENTATION:
     AZIMUTH_ANGLE: 0

@@ -11,7 +11,7 @@ class DisortConfig:
 
     """
 
-    def __init__(self, input_file, snicar_config, ice, optical_properties_for_disort, phase_function):
+    def __init__(self, input_file, snicar_config, ice, optical_properties_for_disort):
         with open(input_file, "r") as ymlfile:
             inputs = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
@@ -32,12 +32,12 @@ class DisortConfig:
         self.ss_alb= optical_properties_for_disort.ssa
         self.umu0 = np.cos(np.radians(self.solar_zenith_angle))
         self.umu = np.cos(np.radians(self.emission_angles))
-        self.pmom = phase_function
+        self.pmom = 0
         self.temperatures = inputs["DISORT"]["ICE"]["TEMPERATURES"] # array of temperatures, in K, for each ice layer - default to melting point
         self.lyr_height = np.zeros(self.nbr_lyr+1)  # array of layer heights (m absl) - we assume plane parallel setup so set to zero
         self.umu = np.cos(np.radians(self.emission_angles)) #  the cosines must be in descending order
         self.n_umu = len(self.umu)
-        self.pmom = phase_function
+        self.nmom = inputs["DISORT"]["CONFIG"]["NMOM"]
         self.utau = np.cumsum(self.layer_thicknesses)
         self.boundary_conditions = inputs["DISORT"]["CONFIG"]["BOUNDARY_CONDITIONS"] # IBCND
         self.phi0 = inputs["DISORT"]["CONFIG"]["PHI0"] # azimuth angle of incident beam

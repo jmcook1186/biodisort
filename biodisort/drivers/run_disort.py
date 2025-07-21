@@ -19,7 +19,7 @@ def run_disort(disort_config: DisortConfig, brdf_config: BrdfConfig)-> DisortOut
     # create output object
     outputs = DisortOutputs(disort_config)
 
-    for i in range(480):
+    for i in range(disort_config.nbr_wvl):
         rfldir, rfldn, flup, dfdt, uavg, uu, albedo_medium, trnmed = disort.disort(
             disort_config.usr_ang,
             disort_config.usr_tau,
@@ -32,7 +32,7 @@ def run_disort(disort_config: DisortConfig, brdf_config: BrdfConfig)-> DisortOut
             disort_config.do_pseudo_sphere,
             disort_config.optical_depth[:, i],
             disort_config.ss_alb[:, i],
-            disort_config.pmom,
+            disort_config.pmom[i,:,:],
             disort_config.temperatures,
             disort_config.wavenumber_low,
             disort_config.wavenumber_high,
@@ -66,7 +66,7 @@ def run_disort(disort_config: DisortConfig, brdf_config: BrdfConfig)-> DisortOut
             transmissivity_medium,
             maxcmu=disort_config.n_streams,
             maxulv=disort_config.nbr_lyr,
-            maxmom=127,
+            maxmom=len(disort_config.pmom[i,:,0])-1, # fix maxmom at number of legendre coefficients -1
         )
 
         # remember each output is an array over viewing angles - for now just take the mean over angle
